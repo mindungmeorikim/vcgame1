@@ -9,17 +9,19 @@
 <body>
   <main class="game">
     <header class="top-bar">
-      <div class="status-card">❤️ 하트: <span id="hearts">5</span> / 100</div>
-      <div class="status-card">🪙 골드: <span id="gold">0</span></div>
-      <div class="status-card">🔥 로그인: <span id="loginStreak">0</span>일</div>
-      <div class="status-card">🚚 단계: <span id="stage">1</span></div>
-      <div class="status-card">🏆 점수: <span id="score">0</span></div>
-      <div class="status-card">실수: <span id="mistakes">0</span> / 5</div>
+      <div class="status-card">🏆<div>점수<br><span id="score">0</span></div></div>
+      <div class="status-card">🪙<div>골드<br><span id="gold">0</span></div></div>
+
+      <h1><span>📦</span> 택배 분류 게임</h1>
+
+      <div class="status-card">❤️<div>하트<br><span id="hearts">5</span> / 100</div></div>
+      <div class="status-card">❌<div>실수<br><span id="mistakes">0</span> / 5</div></div>
     </header>
 
-    <h1>📦 택배 분류 게임</h1>
-
-    <button id="shopBtn">❤️ 하트 상점</button>
+    <div class="sub-status">
+      🔥 로그인 <span id="loginStreak">0</span>일 · 🚚 단계 <span id="stage">1</span>
+      <button id="shopBtn">❤️ 하트 상점</button>
+    </div>
 
     <section class="warehouse" id="warehouse">
       <div class="stage-banner" id="stageBanner">STAGE 1</div>
@@ -30,6 +32,7 @@
       <div class="machine">
         <div class="alarm" id="alarm">🚨</div>
         <div class="door"></div>
+        <div class="signal"></div>
       </div>
 
       <div class="conveyor">
@@ -38,16 +41,18 @@
         </div>
       </div>
 
+      <p id="message">택배가 도착하면 알맞은 상자를 클릭하세요!</p>
+
       <div class="bins">
         <button class="bin green" data-type="일반">일반 📦</button>
         <button class="bin blue" data-type="냉장">냉장 ❄️</button>
         <button class="bin orange" data-type="파손주의">파손주의 🍷</button>
       </div>
+
+      <button id="startBtn">게임 시작</button>
     </section>
 
-    <p id="message">게임 시작을 눌러주세요!</p>
     <p id="regenText">하트 자동 회복 대기중</p>
-    <button id="startBtn">게임 시작</button>
   </main>
 
   <div id="loginRewardModal" class="modal">
@@ -62,14 +67,12 @@
     <div class="modal-content">
       <h2>❤️ 하트 상점</h2>
       <p>하트 1개당 골드 5개가 필요합니다.</p>
-
       <div class="shop-items">
-        <button class="shop-item" data-heart="1">❤️ x1<br />5골드</button>
-        <button class="shop-item" data-heart="3">❤️ x3<br />15골드</button>
-        <button class="shop-item" data-heart="5">❤️ x5<br />25골드</button>
-        <button class="shop-item" data-heart="10">❤️ x10<br />50골드</button>
+        <button class="shop-item" data-heart="1">❤️ x1<br>5골드</button>
+        <button class="shop-item" data-heart="3">❤️ x3<br>15골드</button>
+        <button class="shop-item" data-heart="5">❤️ x5<br>25골드</button>
+        <button class="shop-item" data-heart="10">❤️ x10<br>50골드</button>
       </div>
-
       <button id="closeShopBtn">닫기</button>
     </div>
   </div>
