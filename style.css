@@ -28,13 +28,12 @@ h1 {
   margin: 0;
   font-size: 42px;
   color: #2b1608;
-  text-shadow: 2px 2px 0 #ead7c2;
 }
 
 .status-card {
   background: white;
   padding: 16px 28px;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 24px;
   font-weight: bold;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
@@ -50,21 +49,15 @@ h1 {
 
 .warehouse {
   position: relative;
-  height: 420px;
+  height: 430px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 14px;
   background: linear-gradient(#f7e4c2, #f5d9a7);
-  border: 2px solid #dfbf88;
+  border: 3px solid #dfbf88;
 }
 
-.background-lines {
-  position: absolute;
-  inset: 0;
-  opacity: 0.35;
-  background:
-    linear-gradient(90deg, transparent 0 12%, #c8bda8 12% 13%, transparent 13% 100%),
-    linear-gradient(#ffffff55 0 18%, transparent 18% 100%);
-  background-size: 260px 100%, 100% 120px;
+.warehouse.gameover-flash {
+  animation: gameoverFlash 0.18s 8;
 }
 
 .machine {
@@ -81,6 +74,12 @@ h1 {
   left: 40px;
   font-size: 34px;
   z-index: 3;
+  opacity: 0.4;
+}
+
+.alarm.active {
+  opacity: 1;
+  animation: alarmBlink 0.25s infinite;
 }
 
 .door {
@@ -90,37 +89,6 @@ h1 {
   background: #151f20;
   border: 10px solid #777;
   border-radius: 8px 8px 0 0;
-}
-
-.signal {
-  position: absolute;
-  right: 0;
-  top: 70px;
-  width: 32px;
-  height: 68px;
-  background: #333;
-  border: 4px solid #666;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-}
-
-.green-light,
-.red-light {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-}
-
-.green-light {
-  background: #3ee04b;
-}
-
-.red-light {
-  background: #ff3b30;
 }
 
 .conveyor {
@@ -182,6 +150,10 @@ h1 {
   font-weight: bold;
 }
 
+.box.drop {
+  animation: boxDrop 0.55s ease forwards;
+}
+
 .bins {
   position: absolute;
   left: 215px;
@@ -225,6 +197,44 @@ h1 {
   animation: wrong 0.35s;
 }
 
+.warning {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff3b30;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 999px;
+  font-size: 20px;
+  font-weight: bold;
+  display: none;
+  z-index: 10;
+}
+
+.warning.show {
+  display: block;
+  animation: warningPulse 0.35s infinite;
+}
+
+.combo {
+  position: absolute;
+  top: 82px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 42px;
+  font-weight: 900;
+  color: #ff7b00;
+  text-shadow: 3px 3px white;
+  display: none;
+  z-index: 10;
+}
+
+.combo.show {
+  display: block;
+  animation: comboPop 0.65s ease;
+}
+
 #message {
   text-align: center;
   font-size: 23px;
@@ -245,15 +255,62 @@ h1 {
 }
 
 @keyframes correct {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.14); }
-  100% { transform: scale(1); }
+  50% {
+    transform: scale(1.14);
+  }
 }
 
 @keyframes wrong {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  50% { transform: translateX(10px); }
-  75% { transform: translateX(-10px); }
-  100% { transform: translateX(0); }
+  25% {
+    transform: translateX(-10px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  75% {
+    transform: translateX(-10px);
+  }
+}
+
+@keyframes alarmBlink {
+  50% {
+    transform: scale(1.25);
+    filter: brightness(1.6);
+  }
+}
+
+@keyframes warningPulse {
+  50% {
+    transform: translateX(-50%) scale(1.08);
+  }
+}
+
+@keyframes comboPop {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.4);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.25);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes boxDrop {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  100% {
+    transform: rotate(18deg) scale(0.7);
+  }
+}
+
+@keyframes gameoverFlash {
+  50% {
+    background: #ff4d4d;
+  }
 }
