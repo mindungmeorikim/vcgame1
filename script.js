@@ -65,6 +65,7 @@ function movePackage() {
   if (boxX >= finishLine) {
     clearInterval(moveTimer);
     canSort = false;
+    playWrongSound();
     endGame("💀 게임 오버! 택배가 끝까지 가버렸어요.");
   }
 }
@@ -78,7 +79,6 @@ function sortPackage(selectedType, selectedBin) {
     scoreEl.textContent = score;
     message.textContent = "정답! 알맞은 박스에 들어갔어요.";
 
-    // 정답 → 커짐 + 성공음
     playCorrectSound();
     selectedBin.classList.add("correct");
     dropBox(selectedBin);
@@ -92,7 +92,6 @@ function sortPackage(selectedType, selectedBin) {
     mistakesEl.textContent = mistakes;
     message.textContent = "실수! 다른 박스에 넣었어요.";
 
-    // 오답 → 흔들림 + 실패음
     playWrongSound();
     selectedBin.classList.add("wrong");
     dropBox(selectedBin);
@@ -128,17 +127,32 @@ function endGame(text) {
 }
 
 function playCorrectSound() {
-  const sound = new Audio(
-    "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"
-  );
-  sound.volume = 0.35;
-  sound.play();
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  playTone(audioCtx, 660, 0, 0.12);
+  playTone(audioCtx, 880, 0.13, 0.16);
 }
 
 function playWrongSound() {
-  const sound = new Audio(
-    "https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"
-  );
-  sound.volume = 0.35;
-  sound.play();
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  playTone(audioCtx, 180, 0, 0.35);
+}
+
+function playTone(audioCtx, frequency, startTime, duration) {
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+
+  oscillator.type = "sine";
+  oscillator.frequency.value = frequency;
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime + startTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + startTime + 0.02);
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + startTime + duration);
+
+  oscillator.start(audioCtx.currentTime + startTime);
+  oscillator.stop(audioCtx.currentTime + startTime + duration);
 }
