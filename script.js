@@ -62,6 +62,16 @@ function startGame() {
   comboEl.classList.remove("show");
   speedBonusEl.classList.remove("show");
 
+  nicknameInput.value = "";
+  nicknameInput.style.display = "block";
+
+  saveScoreBtn.textContent = "점수 등록";
+  saveScoreBtn.disabled = false;
+  saveScoreBtn.style.display = "inline-block";
+
+  restartBtn.textContent = "다시 시작";
+  restartBtn.style.display = "inline-block";
+
   createPackage();
 }
 
@@ -119,14 +129,14 @@ function sortPackage(selectedType, selectedBin) {
     score += 1 + comboBonus + speedBonus;
     scoreEl.textContent = score;
 
-    let text = `정답! +1점`;
+    let text = "정답! +1점";
 
     if (comboBonus > 0) {
       text += ` / 콤보 보너스 +${comboBonus}점`;
     }
 
     if (speedBonus > 0) {
-      text += ` / 빠른 분류 +1점`;
+      text += " / 빠른 분류 +1점";
       showSpeedBonus();
     }
 
@@ -150,9 +160,6 @@ function sortPackage(selectedType, selectedBin) {
     }
   } else {
     mistakes++;
-
-    // 실패하면 콤보 초기화.
-    // 다음 정답부터 다시 1콤보로 시작됨.
     combo = 0;
 
     mistakesEl.textContent = mistakes;
@@ -267,10 +274,14 @@ function saveRanking() {
   localStorage.setItem("parcelRanking", JSON.stringify(rankings));
 
   scoreSaved = true;
-  saveScoreBtn.textContent = "등록 완료";
-  saveScoreBtn.disabled = true;
 
   renderRanking();
+
+  nicknameInput.style.display = "none";
+  saveScoreBtn.style.display = "none";
+
+  restartBtn.textContent = "🎮 다시 플레이";
+  restartBtn.style.display = "inline-block";
 }
 
 function renderRanking() {
@@ -292,9 +303,17 @@ function renderRanking() {
 
 function restartGame() {
   nicknameInput.value = "";
+  nicknameInput.style.display = "block";
+
   saveScoreBtn.textContent = "점수 등록";
   saveScoreBtn.disabled = false;
+  saveScoreBtn.style.display = "inline-block";
+
+  restartBtn.textContent = "다시 시작";
+  restartBtn.style.display = "inline-block";
+
   rankingModal.style.display = "none";
+
   startGame();
 }
 
