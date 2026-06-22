@@ -1,0 +1,80 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f4f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.game {
+  width: 420px;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+h1 {
+  font-size: 32px;
+}
+
+.status {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  font-size: 18px;
+}
+
+.package {
+  margin: 25px auto;
+  width: 230px;
+  height: 140px;
+  background: #d99a4e;
+  border: 5px solid #8b5a2b;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 12px 18px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.buttons button:nth-child(1) {
+  background: #7cc576;
+}
+
+.buttons button:nth-child(2) {
+  background: #7ec8e3;
+}
+
+.buttons button:nth-child(3) {
+  background: #ff9f68;
+}
+
+#startBtn {
+  background: #222;
+  color: white;
+}
+
+#message {
+  font-size: 22px;
+  font-weight: bold;
+}

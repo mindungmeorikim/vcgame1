@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>택배 분류 게임</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="game">
+    <h1>📦 택배 분류 게임</h1>
+
+    <section class="status">
+      <span>점수: <strong id="score">0</strong></span>
+      <span>실수: <strong id="mistakes">0</strong> / 5</span>
+    </section>
+
+    <section class="package-area">
+      <div id="packageBox" class="package">게임 시작을 눌러주세요</div>
+    </section>
+
+    <section class="buttons">
+      <button data-type="일반">일반</button>
+      <button data-type="냉장">냉장</button>
+      <button data-type="파손주의">파손주의</button>
+    </section>
+
+    <button id="startBtn">게임 시작</button>
+
+    <p id="message"></p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
