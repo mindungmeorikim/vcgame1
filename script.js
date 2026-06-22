@@ -1,4 +1,4 @@
-const types = ["일반", "냉장", "파손주의"];
+const types = ["일반", "냉장", "파손주의", "폭탄"];
 
 const MAX_HEARTS = 100;
 const AUTO_REGEN_MAX = 5;
@@ -107,13 +107,14 @@ function startGame() {
 
   scoreEl.textContent = score;
   mistakesEl.textContent = mistakes;
-  message.textContent = "1초 안에 분류하면 빠른 분류 보너스 +1점!";
+  message.textContent = "폭탄 택배는 폭탄 박스로! 잘못 누르면 실수 +2!";
 
   rankingModal.style.display = "none";
   warehouse.classList.remove("gameover-flash", "stage-2", "stage-3");
   comboEl.classList.remove("show");
   speedBonusEl.classList.remove("show");
   boxLabel.classList.remove("blink");
+  box.classList.remove("bomb-box");
 
   nicknameInput.value = "";
   nicknameInput.style.display = "block";
@@ -134,6 +135,12 @@ function createPackage() {
   currentType = types[Math.floor(Math.random() * types.length)];
   boxLabel.textContent = currentType;
 
+  if (currentType === "폭탄") {
+    box.classList.add("bomb-box");
+  } else {
+    box.classList.remove("bomb-box");
+  }
+
   if (stage === 3) {
     boxLabel.classList.add("blink");
   } else {
@@ -147,7 +154,7 @@ function createPackage() {
   box.classList.remove("drop");
   box.style.display = "flex";
   box.style.left = boxX + "px";
-  box.style.top = "-120px";
+  box.style.top = "-112px";
   box.style.transform = "rotate(0deg) scale(1)";
 
   moveTimer = setInterval(movePackage, 20);
@@ -188,6 +195,10 @@ function sortPackage(selectedType, selectedBin) {
 
     let text = "정답! +1점";
 
+    if (currentType === "폭탄") {
+      text = "폭탄 처리 성공! +1점";
+    }
+
     if (comboBonus > 0) text += ` / 콤보 보너스 +${comboBonus}점`;
 
     if (speedBonus > 0) {
@@ -210,15 +221,19 @@ function sortPackage(selectedType, selectedBin) {
       return;
     }
   } else {
-    const mistakePenalty = stage === 3 ? 2 : 1;
+    let mistakePenalty = stage === 3 ? 2 : 1;
+
+    if (currentType === "폭탄" || selectedType === "폭탄") {
+      mistakePenalty = 2;
+    }
 
     mistakes += mistakePenalty;
     combo = 0;
 
     mistakesEl.textContent = mistakes;
 
-    if (stage === 3) {
-      message.textContent = "3단계 실수! 실수 +2, 콤보 초기화!";
+    if (mistakePenalty === 2) {
+      message.textContent = "폭탄 분류 실패! 실수 +2, 콤보 초기화!";
     } else {
       message.textContent = "실수! 콤보가 초기화됐어요.";
     }
