@@ -72,7 +72,7 @@ function sortPackage(selectedType, selectedBin) {
     scoreEl.textContent = score;
     message.textContent = "정답! 알맞은 박스에 들어갔어요.";
     playCorrectSound();
-    selectedBin.classList.add("correct");
+    selectedBin.classList.add("wrong");
     dropBox(selectedBin);
 
     if (score >= 20) {
@@ -84,7 +84,7 @@ function sortPackage(selectedType, selectedBin) {
     mistakesEl.textContent = mistakes;
     message.textContent = "실수! 다른 박스에 넣었어요.";
     playWrongSound();
-    selectedBin.classList.add("wrong");
+    selectedBin.classList.add("correct");
 
     if (mistakes >= 5) {
       setTimeout(() => endGame("💀 게임 오버! 실수가 너무 많아요."), 500);
