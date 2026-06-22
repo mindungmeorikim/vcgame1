@@ -1,80 +1,205 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f2f4f8;
+  background: #eef2f7;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
 }
 
 .game {
-  width: 420px;
+  width: 900px;
   background: white;
-  padding: 30px;
-  border-radius: 20px;
+  padding: 24px;
+  border-radius: 24px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 h1 {
-  font-size: 32px;
+  margin: 0;
+  font-size: 36px;
 }
 
-.status {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 0;
-  font-size: 18px;
-}
-
-.package {
-  margin: 25px auto;
-  width: 230px;
-  height: 140px;
-  background: #d99a4e;
-  border: 5px solid #8b5a2b;
-  border-radius: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 26px;
+.score,
+.mistake {
+  font-size: 20px;
   font-weight: bold;
 }
 
-.buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
+#score {
+  color: #19984a;
 }
 
-button {
-  padding: 12px 18px;
-  font-size: 16px;
-  border: none;
-  border-radius: 10px;
+#mistakes {
+  color: #e74c3c;
+}
+
+.factory {
+  position: relative;
+  height: 460px;
+  margin-top: 24px;
+  background: linear-gradient(#f8e7c8, #f5d9a8);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 3px solid #e2c18d;
+}
+
+.door {
+  position: absolute;
+  left: 30px;
+  top: 70px;
+  width: 95px;
+  height: 170px;
+  background: #2f3438;
+  border: 10px solid #777;
+  border-radius: 8px 8px 0 0;
+}
+
+.door::before {
+  content: "🚨";
+  position: absolute;
+  top: -42px;
+  left: 22px;
+  font-size: 34px;
+}
+
+.conveyor {
+  position: absolute;
+  left: 55px;
+  right: 55px;
+  top: 210px;
+  height: 80px;
+  background: repeating-linear-gradient(
+    135deg,
+    #333 0,
+    #333 18px,
+    #444 18px,
+    #444 36px
+  );
+  border: 6px solid #222;
+  border-radius: 22px;
+}
+
+.conveyor::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -23px;
+  height: 22px;
+  background: repeating-radial-gradient(circle, #666 0 8px, #222 9px 15px);
+}
+
+.box {
+  position: absolute;
+  left: 0;
+  top: -95px;
+  width: 135px;
+  height: 95px;
+  background: #d99645;
+  border: 5px solid #8d5727;
+  border-radius: 12px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: left 0.04s linear, top 0.3s ease, transform 0.3s ease;
+}
+
+.box::before {
+  content: "📦";
+  position: absolute;
+  top: -22px;
+  left: -10px;
+  font-size: 34px;
+}
+
+.box-label {
+  background: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.bins {
+  position: absolute;
+  left: 130px;
+  right: 130px;
+  bottom: 35px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.bin {
+  width: 190px;
+  height: 95px;
+  border: 5px solid;
+  border-radius: 16px;
+  font-size: 22px;
+  font-weight: bold;
   cursor: pointer;
 }
 
-.buttons button:nth-child(1) {
-  background: #7cc576;
+.green {
+  background: #79c66b;
+  border-color: #3e8e33;
 }
 
-.buttons button:nth-child(2) {
-  background: #7ec8e3;
+.blue {
+  background: #73c7e6;
+  border-color: #2e83aa;
 }
 
-.buttons button:nth-child(3) {
-  background: #ff9f68;
+.orange {
+  background: #ff9b5f;
+  border-color: #c95b17;
 }
 
-#startBtn {
-  background: #222;
-  color: white;
+.bin.correct {
+  animation: correct 0.35s;
+}
+
+.bin.wrong {
+  animation: wrong 0.35s;
 }
 
 #message {
   font-size: 22px;
   font-weight: bold;
+}
+
+#startBtn {
+  padding: 14px 30px;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+@keyframes correct {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wrong {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-8px); }
+  100% { transform: translateX(0); }
 }
