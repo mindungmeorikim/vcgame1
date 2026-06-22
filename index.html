@@ -8,14 +8,23 @@
 </head>
 <body>
   <main class="game">
-    <div class="top">
-      <div class="score">🏆 점수: <span id="score">0</span></div>
+    <header class="top-bar">
+      <div class="status-card">🏆 점수: <span id="score">0</span></div>
       <h1>📦 택배 분류 게임</h1>
-      <div class="mistake">❤️ 실수: <span id="mistakes">0</span> / 5</div>
-    </div>
+      <div class="status-card">❤️ 실수: <span id="mistakes">0</span> / 5</div>
+    </header>
 
-    <section class="factory">
-      <div class="door"></div>
+    <section class="warehouse">
+      <div class="background-lines"></div>
+
+      <div class="machine">
+        <div class="alarm">🚨</div>
+        <div class="door"></div>
+        <div class="signal">
+          <span class="green-light"></span>
+          <span class="red-light"></span>
+        </div>
+      </div>
 
       <div class="conveyor">
         <div id="box" class="box">
