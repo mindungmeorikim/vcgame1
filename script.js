@@ -193,11 +193,7 @@ function sortPackage(selectedType, selectedBin) {
     score += 1 + comboBonus + speedBonus;
     scoreEl.textContent = score;
 
-    let text = "정답! +1점";
-
-    if (currentType === "폭탄") {
-      text = "폭탄 처리 성공! +1점";
-    }
+    let text = currentType === "폭탄" ? "폭탄 처리 성공! +1점" : "정답! +1점";
 
     if (comboBonus > 0) text += ` / 콤보 보너스 +${comboBonus}점`;
 
@@ -217,40 +213,44 @@ function sortPackage(selectedType, selectedBin) {
     updateStage(false);
 
     if (score >= 50) {
-      setTimeout(() => endGame("🎉 승리! 3단계 물류 분류 완료!"), 650);
+      setTimeout(() => {
+        endGame("🎉 승리! 3단계 물류 분류 완료!");
+      }, 650);
       return;
     }
   } else {
-    let mistakePenalty = stage === 3 ? 2 : 1;
+    let mistakePenalty = 1;
 
-    if (currentType === "폭탄" || selectedType === "폭탄") {
+    if (stage === 3 || currentType === "폭탄" || selectedType === "폭탄") {
       mistakePenalty = 2;
     }
 
     mistakes += mistakePenalty;
     combo = 0;
-
     mistakesEl.textContent = mistakes;
 
-    if (mistakePenalty === 2) {
-      message.textContent = "폭탄 분류 실패! 실수 +2, 콤보 초기화!";
-    } else {
-      message.textContent = "실수! 콤보가 초기화됐어요.";
-    }
+    message.textContent = mistakePenalty === 2
+      ? "폭탄 분류 실패! 실수 +2, 콤보 초기화!"
+      : "실수! 콤보가 초기화됐어요.";
 
     playWrongSound();
     selectedBin.classList.add("wrong");
     dropBox(selectedBin);
 
     if (mistakes >= 5) {
-      setTimeout(() => endGame("💀 게임 오버! 실수가 너무 많아요."), 650);
+      setTimeout(() => {
+        endGame("💀 게임 오버! 실수가 너무 많아요.");
+      }, 650);
       return;
     }
   }
 
   setTimeout(() => {
     selectedBin.classList.remove("correct", "wrong");
-    createPackage();
+
+    if (!gameOver) {
+      createPackage();
+    }
   }, 850);
 }
 
@@ -273,13 +273,8 @@ function updateStage(isReset) {
 
   warehouse.classList.remove("stage-2", "stage-3");
 
-  if (stage === 2) {
-    warehouse.classList.add("stage-2");
-  }
-
-  if (stage === 3) {
-    warehouse.classList.add("stage-3");
-  }
+  if (stage === 2) warehouse.classList.add("stage-2");
+  if (stage === 3) warehouse.classList.add("stage-3");
 
   if (!isReset && previousStage !== stage) {
     message.textContent = `🚚 STAGE ${stage} 진입! 속도가 더 빨라집니다!`;
@@ -308,7 +303,7 @@ function endGame(text) {
   boxLabel.classList.remove("blink");
   finalScore.textContent = score;
 
- const rewardGold = getScoreRewardGold(score);
+  const rewardGold = getScoreRewardGold(score);
 
   if (rewardGold > 0) {
     gold += rewardGold;
@@ -330,6 +325,12 @@ function getScoreRewardGold(finalScore) {
   if (finalScore >= 50) return 3;
   if (finalScore >= 30) return 2;
   if (finalScore >= 20) return 1;
+  return 0;
+}
+
+function getComboBonus() {
+  if (combo >= 10) return 2;
+  if (combo >= 5) return 1;
   return 0;
 }
 
