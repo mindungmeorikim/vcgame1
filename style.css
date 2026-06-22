@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -7,6 +8,7 @@ body {
   min-height: 100vh;
   font-family: Arial, sans-serif;
   background: #ead7bd;
+  overflow-x: hidden;
 }
 
 .game {
@@ -34,6 +36,7 @@ h1 {
   font-size: 38px;
   color: #2b1608;
   text-shadow: 3px 3px 0 #f2d8b4;
+  white-space: nowrap;
 }
 
 .status-card {
@@ -280,6 +283,7 @@ h1 {
   transition: top 0.35s ease, transform 0.35s ease;
   z-index: 12;
   box-shadow: 8px 10px 0 rgba(0,0,0,.22);
+  pointer-events: none;
 }
 
 .box::before {
@@ -358,6 +362,7 @@ h1 {
   box-shadow:
     inset 0 10px 0 rgba(255,255,255,.35),
     0 8px 0 rgba(0,0,0,.18);
+  touch-action: manipulation;
 }
 
 .green {
@@ -402,6 +407,7 @@ h1 {
   font-weight: 900;
   cursor: pointer;
   box-shadow: 0 7px 0 #8c4e00;
+  touch-action: manipulation;
 }
 
 #regenText {
@@ -472,6 +478,7 @@ h1 {
 
 .modal-content {
   width: 450px;
+  max-width: calc(100vw - 24px);
   background: white;
   padding: 28px;
   border-radius: 22px;
@@ -525,6 +532,280 @@ h1 {
 #rankingList {
   text-align: left;
   font-size: 18px;
+}
+
+@media (max-width: 768px) {
+  body {
+    background: #ead7bd;
+  }
+
+  .game {
+    max-width: 100%;
+    padding: 0 8px 14px;
+  }
+
+  .top-bar {
+    height: auto;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    border-radius: 0 0 14px 14px;
+  }
+
+  h1 {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    font-size: 30px;
+    margin: 4px 0 6px;
+  }
+
+  .status-card {
+    width: auto;
+    height: 58px;
+    font-size: 24px;
+    border-radius: 12px;
+  }
+
+  .status-card div {
+    font-size: 13px;
+  }
+
+  .status-card span {
+    font-size: 20px;
+  }
+
+  .sub-status {
+    font-size: 14px;
+    padding: 8px 4px;
+  }
+
+  #shopBtn {
+    display: inline-block;
+    margin: 6px 0 0;
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+
+  .warehouse {
+    height: 500px;
+    border-radius: 14px;
+  }
+
+  .warehouse::before {
+    top: 62px;
+    height: 120px;
+  }
+
+  .warehouse::after {
+    bottom: 162px;
+    height: 10px;
+  }
+
+  .stage-banner {
+    top: 8px;
+    width: 170px;
+    padding: 8px 14px 14px;
+    font-size: 21px;
+  }
+
+  .stage-banner::after {
+    font-size: 13px;
+  }
+
+  .machine {
+    left: 10px;
+    top: 125px;
+    width: 110px;
+    height: 150px;
+  }
+
+  .alarm {
+    top: -32px;
+    left: 38px;
+    font-size: 32px;
+  }
+
+  .door {
+    width: 100px;
+    height: 135px;
+    border-width: 9px;
+  }
+
+  .signal {
+    width: 26px;
+    height: 58px;
+    top: 58px;
+  }
+
+  .signal::before,
+  .signal::after {
+    left: 5px;
+    width: 11px;
+    height: 11px;
+  }
+
+  .conveyor {
+    left: 8px;
+    right: 8px;
+    top: 258px;
+    height: 76px;
+    border-width: 6px;
+    border-radius: 22px;
+  }
+
+  .conveyor::after {
+    left: 22px;
+    right: 22px;
+    bottom: -25px;
+    height: 22px;
+  }
+
+  .box {
+    top: -92px;
+    width: 120px;
+    height: 86px;
+    border-width: 4px;
+  }
+
+  .box::before {
+    top: -20px;
+    left: -10px;
+    font-size: 26px;
+  }
+
+  .box-label {
+    padding: 8px 16px;
+    font-size: 21px;
+  }
+
+  #message {
+    bottom: 142px;
+    width: calc(100% - 28px);
+    padding: 10px 12px;
+    font-size: 16px;
+    border-radius: 14px;
+  }
+
+  .bins {
+    left: 10px;
+    right: 10px;
+    bottom: 22px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .bin {
+    height: 68px;
+    font-size: 20px;
+    border-width: 5px;
+    border-radius: 16px;
+  }
+
+  #startBtn {
+    width: 210px;
+    padding: 13px;
+    font-size: 24px;
+    margin-top: 10px;
+  }
+
+  .warning {
+    top: 82px;
+    font-size: 15px;
+    padding: 8px 16px;
+  }
+
+  .combo {
+    top: 120px;
+    font-size: 30px;
+  }
+
+  .speed-bonus {
+    top: 160px;
+    font-size: 24px;
+  }
+
+  .modal-content {
+    width: calc(100vw - 28px);
+    padding: 22px;
+  }
+
+  .shop-items {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .game {
+    padding: 0 6px 12px;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  .status-card {
+    height: 52px;
+    font-size: 21px;
+  }
+
+  .status-card div {
+    font-size: 12px;
+  }
+
+  .status-card span {
+    font-size: 18px;
+  }
+
+  .warehouse {
+    height: 470px;
+  }
+
+  .stage-banner {
+    width: 150px;
+    font-size: 19px;
+  }
+
+  .machine {
+    transform: scale(0.86);
+    transform-origin: left top;
+  }
+
+  .conveyor {
+    top: 240px;
+    height: 68px;
+  }
+
+  .box {
+    width: 108px;
+    height: 78px;
+    top: -84px;
+  }
+
+  .box-label {
+    font-size: 18px;
+    padding: 7px 12px;
+  }
+
+  #message {
+    bottom: 130px;
+    font-size: 14px;
+  }
+
+  .bins {
+    bottom: 18px;
+    gap: 8px;
+  }
+
+  .bin {
+    height: 62px;
+    font-size: 17px;
+  }
+
+  #startBtn {
+    width: 190px;
+    font-size: 22px;
+  }
 }
 
 @keyframes correct {
