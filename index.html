@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="game" id="game">
+  <main class="game">
     <header class="top-bar">
       <div class="status-card">🏆 점수: <span id="score">0</span></div>
       <h1>📦 택배 분류 게임</h1>
@@ -16,6 +16,7 @@
 
     <section class="warehouse" id="warehouse">
       <div class="combo" id="combo">COMBO x2</div>
+      <div class="speed-bonus" id="speedBonus">⚡ 빠른 분류 +1점!</div>
       <div class="warning" id="warning">🚨 위험! 빨리 분류하세요!</div>
 
       <div class="machine">
@@ -45,12 +46,7 @@
       <h2>🏆 게임 종료</h2>
       <p>최종 점수: <strong id="finalScore">0</strong>점</p>
 
-      <input
-        type="text"
-        id="nickname"
-        maxlength="10"
-        placeholder="닉네임 입력"
-      />
+      <input type="text" id="nickname" maxlength="10" placeholder="닉네임 입력" />
 
       <button id="saveScoreBtn">점수 등록</button>
       <button id="restartBtn">다시 시작</button>

@@ -73,8 +73,8 @@ h1 {
   top: -35px;
   left: 40px;
   font-size: 34px;
-  z-index: 3;
   opacity: 0.4;
+  z-index: 3;
 }
 
 .alarm.active {
@@ -217,22 +217,33 @@ h1 {
   animation: warningPulse 0.35s infinite;
 }
 
-.combo {
+.combo,
+.speed-bonus {
   position: absolute;
-  top: 82px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 42px;
   font-weight: 900;
-  color: #ff7b00;
-  text-shadow: 3px 3px white;
   display: none;
   z-index: 10;
+  text-shadow: 3px 3px white;
 }
 
-.combo.show {
+.combo {
+  top: 82px;
+  font-size: 42px;
+  color: #ff7b00;
+}
+
+.speed-bonus {
+  top: 135px;
+  font-size: 34px;
+  color: #00a6ff;
+}
+
+.combo.show,
+.speed-bonus.show {
   display: block;
-  animation: comboPop 0.8s ease;
+  animation: popFade 0.85s ease;
 }
 
 #message {
@@ -271,11 +282,6 @@ h1 {
   border-radius: 22px;
   text-align: center;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
-
-.ranking-content h2 {
-  margin-top: 0;
-  font-size: 32px;
 }
 
 .ranking-content input {
@@ -342,12 +348,12 @@ h1 {
   }
 }
 
-@keyframes comboPop {
+@keyframes popFade {
   0% {
     opacity: 0;
     transform: translateX(-50%) scale(0.4);
   }
-  30% {
+  35% {
     opacity: 1;
     transform: translateX(-50%) scale(1.25);
   }
@@ -358,9 +364,6 @@ h1 {
 }
 
 @keyframes boxDrop {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
   100% {
     transform: rotate(18deg) scale(0.7);
   }

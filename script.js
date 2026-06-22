@@ -10,6 +10,7 @@ let moveTimer = null;
 let canSort = false;
 let speed = 2.6;
 let scoreSaved = false;
+let packageStartTime = 0;
 
 const scoreEl = document.querySelector("#score");
 const mistakesEl = document.querySelector("#mistakes");
@@ -22,6 +23,7 @@ const conveyor = document.querySelector(".conveyor");
 const alarm = document.querySelector("#alarm");
 const warning = document.querySelector("#warning");
 const comboEl = document.querySelector("#combo");
+const speedBonusEl = document.querySelector("#speedBonus");
 const warehouse = document.querySelector("#warehouse");
 
 const rankingModal = document.querySelector("#rankingModal");
@@ -53,11 +55,12 @@ function startGame() {
 
   scoreEl.textContent = score;
   mistakesEl.textContent = mistakes;
-  message.textContent = "택배가 끝에 도착하기 전에 알맞은 박스를 클릭하세요!";
+  message.textContent = "1초 안에 분류하면 빠른 분류 보너스 +1점!";
 
   rankingModal.style.display = "none";
   warehouse.classList.remove("gameover-flash");
   comboEl.classList.remove("show");
+  speedBonusEl.classList.remove("show");
 
   createPackage();
 }
@@ -71,6 +74,7 @@ function createPackage() {
 
   boxX = 0;
   canSort = true;
+  packageStartTime = Date.now();
 
   box.classList.remove("drop");
   box.style.display = "flex";
@@ -108,23 +112,32 @@ function sortPackage(selectedType, selectedBin) {
   if (selectedType === currentType) {
     combo++;
 
-    const bonus = getComboBonus();
-    score += 1 + bonus;
+    const reactionTime = Date.now() - packageStartTime;
+    const speedBonus = reactionTime <= 1000 ? 1 : 0;
+    const comboBonus = getComboBonus();
 
+    score += 1 + comboBonus + speedBonus;
     scoreEl.textContent = score;
 
-    if (bonus > 0) {
-      message.textContent = `정답! COMBO x${combo} 보너스 +${bonus}점!`;
-    } else {
-      message.textContent = "정답! 알맞은 박스에 들어갔어요.";
+    let text = `정답! +1점`;
+
+    if (comboBonus > 0) {
+      text += ` / 콤보 보너스 +${comboBonus}점`;
     }
+
+    if (speedBonus > 0) {
+      text += ` / 빠른 분류 +1점`;
+      showSpeedBonus();
+    }
+
+    message.textContent = text;
 
     playCorrectSound();
     selectedBin.classList.add("correct");
     dropBox(selectedBin);
 
     if (combo >= 2) {
-      showCombo(bonus);
+      showCombo(comboBonus);
     }
 
     if (score >= 10) {
@@ -137,10 +150,13 @@ function sortPackage(selectedType, selectedBin) {
     }
   } else {
     mistakes++;
+
+    // 실패하면 콤보 초기화.
+    // 다음 정답부터 다시 1콤보로 시작됨.
     combo = 0;
 
     mistakesEl.textContent = mistakes;
-    message.textContent = "실수! 다른 박스에 넣었어요.";
+    message.textContent = "실수! 콤보가 초기화됐어요.";
 
     playWrongSound();
     selectedBin.classList.add("wrong");
@@ -159,14 +175,8 @@ function sortPackage(selectedType, selectedBin) {
 }
 
 function getComboBonus() {
-  if (combo >= 10) {
-    return 2;
-  }
-
-  if (combo >= 5) {
-    return 1;
-  }
-
+  if (combo >= 10) return 2;
+  if (combo >= 5) return 1;
   return 0;
 }
 
@@ -191,9 +201,9 @@ function hideWarning() {
   warning.classList.remove("show");
 }
 
-function showCombo(bonus) {
-  if (bonus > 0) {
-    comboEl.textContent = `COMBO x${combo}  +${bonus}점`;
+function showCombo(comboBonus) {
+  if (comboBonus > 0) {
+    comboEl.textContent = `COMBO x${combo}  +${comboBonus}점`;
   } else {
     comboEl.textContent = `COMBO x${combo}`;
   }
@@ -204,6 +214,16 @@ function showCombo(bonus) {
 
   setTimeout(() => {
     comboEl.classList.remove("show");
+  }, 900);
+}
+
+function showSpeedBonus() {
+  speedBonusEl.classList.remove("show");
+  void speedBonusEl.offsetWidth;
+  speedBonusEl.classList.add("show");
+
+  setTimeout(() => {
+    speedBonusEl.classList.remove("show");
   }, 900);
 }
 
@@ -289,9 +309,9 @@ function playWrongSound() {
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
   playTone(audioCtx, 1200, 0, 0.08);
-  playTone(audioCtx, 900, 0.08, 0.10);
+  playTone(audioCtx, 900, 0.08, 0.1);
   playTone(audioCtx, 600, 0.18, 0.15);
-  playTone(audioCtx, 350, 0.33, 0.30);
+  playTone(audioCtx, 350, 0.33, 0.3);
 }
 
 function playTone(audioCtx, frequency, startTime, duration) {
