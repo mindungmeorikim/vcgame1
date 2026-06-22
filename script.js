@@ -47,7 +47,7 @@ function createPackage() {
   box.style.display = "flex";
   box.style.left = boxX + "px";
   box.style.top = "-95px";
-  box.style.transform = "rotate(0deg)";
+  box.style.transform = "rotate(0deg) scale(1)";
 
   moveTimer = setInterval(movePackage, 20);
 }
@@ -71,7 +71,9 @@ function sortPackage(selectedType, selectedBin) {
     score++;
     scoreEl.textContent = score;
     message.textContent = "정답! 알맞은 박스에 들어갔어요.";
-    playCorrectSound();
+
+    // 제대로 넣었을 때: 기존 '잘못 넣었을 때' 효과음 + 모션 적용
+    playWrongSound();
     selectedBin.classList.add("wrong");
     dropBox(selectedBin);
 
@@ -83,8 +85,11 @@ function sortPackage(selectedType, selectedBin) {
     mistakes++;
     mistakesEl.textContent = mistakes;
     message.textContent = "실수! 다른 박스에 넣었어요.";
-    playWrongSound();
+
+    // 잘못 넣었을 때: 기존 '제대로 넣었을 때' 효과음 + 모션 적용
+    playCorrectSound();
     selectedBin.classList.add("correct");
+    dropBox(selectedBin);
 
     if (mistakes >= 5) {
       setTimeout(() => endGame("💀 게임 오버! 실수가 너무 많아요."), 500);
