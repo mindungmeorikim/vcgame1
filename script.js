@@ -93,6 +93,8 @@ function startGame() {
     return;
   }
 
+  clearInterval(moveTimer);
+
   hearts--;
   saveResources();
 
@@ -102,7 +104,7 @@ function startGame() {
   stage = 1;
   speed = 2.6;
   gameOver = false;
-  canSort = true;
+  canSort = false;
   scoreSaved = false;
 
   scoreEl.textContent = score;
@@ -114,7 +116,7 @@ function startGame() {
   comboEl.classList.remove("show");
   speedBonusEl.classList.remove("show");
   boxLabel.classList.remove("blink");
-  box.classList.remove("bomb-box");
+  box.classList.remove("bomb-box", "drop");
 
   nicknameInput.value = "";
   nicknameInput.style.display = "block";
@@ -135,10 +137,10 @@ function createPackage() {
   currentType = types[Math.floor(Math.random() * types.length)];
   boxLabel.textContent = currentType;
 
+  box.classList.remove("bomb-box", "drop");
+
   if (currentType === "폭탄") {
     box.classList.add("bomb-box");
-  } else {
-    box.classList.remove("bomb-box");
   }
 
   if (stage === 3) {
@@ -151,9 +153,8 @@ function createPackage() {
   canSort = true;
   packageStartTime = Date.now();
 
-  box.classList.remove("drop");
   box.style.display = "flex";
-  box.style.left = boxX + "px";
+  box.style.left = "0px";
   box.style.top = "-112px";
   box.style.transform = "rotate(0deg) scale(1)";
 
@@ -162,13 +163,14 @@ function createPackage() {
 
 function movePackage() {
   const finishLine = conveyor.clientWidth - box.clientWidth - 15;
-  const warningRate = getWarningRate();
-  const warningLine = finishLine * warningRate;
+  const warningLine = finishLine * getWarningRate();
 
   boxX += speed;
   box.style.left = boxX + "px";
 
-  if (boxX >= warningLine) showWarning();
+  if (boxX >= warningLine) {
+    showWarning();
+  }
 
   if (boxX >= finishLine) {
     clearInterval(moveTimer);
@@ -183,67 +185,15 @@ function sortPackage(selectedType, selectedBin) {
   canSort = false;
   hideWarning();
 
-  if (selectedType === currentType) {
-    combo++;
+  const isCorrect = selectedType === currentType;
 
-    const reactionTime = Date.now() - packageStartTime;
-    const speedBonus = reactionTime <= 1000 ? 1 : 0;
-    const comboBonus = getComboBonus();
-
-    score += 1 + comboBonus + speedBonus;
-    scoreEl.textContent = score;
-
-    let text = currentType === "폭탄" ? "폭탄 처리 성공! +1점" : "정답! +1점";
-
-    if (comboBonus > 0) text += ` / 콤보 보너스 +${comboBonus}점`;
-
-    if (speedBonus > 0) {
-      text += " / 빠른 분류 +1점";
-      showSpeedBonus();
-    }
-
-    message.textContent = text;
-
-    playCorrectSound();
-    selectedBin.classList.add("correct");
-    dropBox(selectedBin);
-
-    if (combo >= 2) showCombo(comboBonus);
-
-    updateStage(false);
-
-    if (score >= 50) {
-      setTimeout(() => {
-        endGame("🎉 승리! 3단계 물류 분류 완료!");
-      }, 650);
-      return;
-    }
+  if (isCorrect) {
+    handleCorrect(selectedBin);
   } else {
-    let mistakePenalty = 1;
-
-    if (stage === 3 || currentType === "폭탄" || selectedType === "폭탄") {
-      mistakePenalty = 2;
-    }
-
-    mistakes += mistakePenalty;
-    combo = 0;
-    mistakesEl.textContent = mistakes;
-
-    message.textContent = mistakePenalty === 2
-      ? "폭탄 분류 실패! 실수 +2, 콤보 초기화!"
-      : "실수! 콤보가 초기화됐어요.";
-
-    playWrongSound();
-    selectedBin.classList.add("wrong");
-    dropBox(selectedBin);
-
-    if (mistakes >= 5) {
-      setTimeout(() => {
-        endGame("💀 게임 오버! 실수가 너무 많아요.");
-      }, 650);
-      return;
-    }
+    handleWrong(selectedType, selectedBin);
   }
+
+  if (gameOver) return;
 
   setTimeout(() => {
     selectedBin.classList.remove("correct", "wrong");
@@ -252,6 +202,74 @@ function sortPackage(selectedType, selectedBin) {
       createPackage();
     }
   }, 850);
+}
+
+function handleCorrect(selectedBin) {
+  combo++;
+
+  const reactionTime = Date.now() - packageStartTime;
+  const speedBonus = reactionTime <= 1000 ? 1 : 0;
+  const comboBonus = getComboBonus();
+
+  score += 1 + comboBonus + speedBonus;
+  scoreEl.textContent = score;
+
+  let text = currentType === "폭탄" ? "폭탄 처리 성공! +1점" : "정답! +1점";
+
+  if (comboBonus > 0) {
+    text += ` / 콤보 보너스 +${comboBonus}점`;
+  }
+
+  if (speedBonus > 0) {
+    text += " / 빠른 분류 +1점";
+    showSpeedBonus();
+  }
+
+  message.textContent = text;
+
+  playCorrectSound();
+  selectedBin.classList.add("correct");
+  dropBox(selectedBin);
+
+  if (combo >= 2) {
+    showCombo(comboBonus);
+  }
+
+  updateStage(false);
+
+  if (score >= 50) {
+    setTimeout(() => {
+      endGame("🎉 승리! 3단계 물류 분류 완료!");
+    }, 650);
+  }
+}
+
+function handleWrong(selectedType, selectedBin) {
+  let mistakePenalty = 1;
+
+  if (stage === 3 || currentType === "폭탄" || selectedType === "폭탄") {
+    mistakePenalty = 2;
+  }
+
+  mistakes += mistakePenalty;
+  combo = 0;
+
+  mistakesEl.textContent = mistakes;
+
+  message.textContent =
+    mistakePenalty === 2
+      ? "폭탄 분류 실패! 실수 +2, 콤보 초기화!"
+      : "실수! 콤보가 초기화됐어요.";
+
+  playWrongSound();
+  selectedBin.classList.add("wrong");
+  dropBox(selectedBin);
+
+  if (mistakes >= 5) {
+    setTimeout(() => {
+      endGame("💀 게임 오버! 실수가 너무 많아요.");
+    }, 650);
+  }
 }
 
 function updateStage(isReset) {
@@ -507,9 +525,10 @@ function hideWarning() {
 }
 
 function showCombo(comboBonus) {
-  comboEl.textContent = comboBonus > 0
-    ? `COMBO x${combo} +${comboBonus}점`
-    : `COMBO x${combo}`;
+  comboEl.textContent =
+    comboBonus > 0
+      ? `COMBO x${combo} +${comboBonus}점`
+      : `COMBO x${combo}`;
 
   comboEl.classList.remove("show");
   void comboEl.offsetWidth;
