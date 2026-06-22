@@ -13,7 +13,7 @@ body {
 }
 
 .game {
-  width: 1150px;
+  width: 1180px;
   padding: 20px;
   text-align: center;
 }
@@ -27,9 +27,9 @@ body {
 
 .status-card {
   background: white;
-  padding: 14px 16px;
+  padding: 14px 14px;
   border-radius: 14px;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: bold;
   box-shadow: 0 3px 12px rgba(0,0,0,0.12);
 }
@@ -61,8 +61,33 @@ h1 {
   border: 3px solid #dfbf88;
 }
 
+.warehouse.stage-2 {
+  background: linear-gradient(#ffe2b8, #ffc979);
+}
+
+.warehouse.stage-3 {
+  background: linear-gradient(#ffd1d1, #ff9b73);
+}
+
 .warehouse.gameover-flash {
   animation: gameoverFlash 0.18s 8;
+}
+
+.stage-banner {
+  position: absolute;
+  top: 18px;
+  right: 28px;
+  background: #222;
+  color: white;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 20px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.stage-banner.pop {
+  animation: stagePop 0.8s ease;
 }
 
 .machine {
@@ -153,6 +178,10 @@ h1 {
   border-radius: 8px;
   font-size: 25px;
   font-weight: bold;
+}
+
+.box-label.blink {
+  animation: labelBlink 0.28s infinite;
 }
 
 .box.drop {
@@ -370,6 +399,24 @@ h1 {
   100% {
     opacity: 0;
     transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes stagePop {
+  0% {
+    transform: scale(0.7);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes labelBlink {
+  50% {
+    opacity: 0.25;
   }
 }
 

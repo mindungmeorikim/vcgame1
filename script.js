@@ -9,6 +9,7 @@ let currentType = "";
 let score = 0;
 let mistakes = 0;
 let combo = 0;
+let stage = 1;
 let gameOver = true;
 let boxX = 0;
 let moveTimer = null;
@@ -27,6 +28,7 @@ let loginStreak = Number(localStorage.getItem("loginStreak")) || 0;
 const heartsEl = document.querySelector("#hearts");
 const goldEl = document.querySelector("#gold");
 const loginStreakEl = document.querySelector("#loginStreak");
+const stageEl = document.querySelector("#stage");
 const scoreEl = document.querySelector("#score");
 const mistakesEl = document.querySelector("#mistakes");
 const box = document.querySelector("#box");
@@ -41,6 +43,7 @@ const warning = document.querySelector("#warning");
 const comboEl = document.querySelector("#combo");
 const speedBonusEl = document.querySelector("#speedBonus");
 const warehouse = document.querySelector("#warehouse");
+const stageBanner = document.querySelector("#stageBanner");
 
 const rankingModal = document.querySelector("#rankingModal");
 const rankingList = document.querySelector("#rankingList");
@@ -96,6 +99,7 @@ function startGame() {
   score = 0;
   mistakes = 0;
   combo = 0;
+  stage = 1;
   speed = 2.6;
   gameOver = false;
   canSort = true;
@@ -106,9 +110,10 @@ function startGame() {
   message.textContent = "1초 안에 분류하면 빠른 분류 보너스 +1점!";
 
   rankingModal.style.display = "none";
-  warehouse.classList.remove("gameover-flash");
+  warehouse.classList.remove("gameover-flash", "stage-2", "stage-3");
   comboEl.classList.remove("show");
   speedBonusEl.classList.remove("show");
+  boxLabel.classList.remove("blink");
 
   nicknameInput.value = "";
   nicknameInput.style.display = "block";
@@ -118,6 +123,7 @@ function startGame() {
   restartBtn.textContent = "🎮 다시 플레이";
 
   updateResources();
+  updateStage(true);
   createPackage();
 }
 
@@ -127,6 +133,12 @@ function createPackage() {
 
   currentType = types[Math.floor(Math.random() * types.length)];
   boxLabel.textContent = currentType;
+
+  if (stage === 3) {
+    boxLabel.classList.add("blink");
+  } else {
+    boxLabel.classList.remove("blink");
+  }
 
   boxX = 0;
   canSort = true;
@@ -143,7 +155,8 @@ function createPackage() {
 
 function movePackage() {
   const finishLine = conveyor.clientWidth - box.clientWidth - 15;
-  const warningLine = finishLine * 0.8;
+  const warningRate = getWarningRate();
+  const warningLine = finishLine * warningRate;
 
   boxX += speed;
   box.style.left = boxX + "px";
@@ -190,18 +203,25 @@ function sortPackage(selectedType, selectedBin) {
 
     if (combo >= 2) showCombo(comboBonus);
 
-    if (score >= 10) speed = 3.6;
+    updateStage(false);
 
-    if (score >= 20) {
-      setTimeout(() => endGame("🎉 승리! 택배 분류 완료!"), 650);
+    if (score >= 50) {
+      setTimeout(() => endGame("🎉 승리! 3단계 물류 분류 완료!"), 650);
       return;
     }
   } else {
-    mistakes++;
+    const mistakePenalty = stage === 3 ? 2 : 1;
+
+    mistakes += mistakePenalty;
     combo = 0;
 
     mistakesEl.textContent = mistakes;
-    message.textContent = "실수! 콤보가 초기화됐어요.";
+
+    if (stage === 3) {
+      message.textContent = "3단계 실수! 실수 +2, 콤보 초기화!";
+    } else {
+      message.textContent = "실수! 콤보가 초기화됐어요.";
+    }
 
     playWrongSound();
     selectedBin.classList.add("wrong");
@@ -219,6 +239,48 @@ function sortPackage(selectedType, selectedBin) {
   }, 850);
 }
 
+function updateStage(isReset) {
+  const previousStage = stage;
+
+  if (score >= 35) {
+    stage = 3;
+    speed = 4.8;
+  } else if (score >= 15) {
+    stage = 2;
+    speed = 3.6;
+  } else {
+    stage = 1;
+    speed = 2.6;
+  }
+
+  stageEl.textContent = stage;
+  stageBanner.textContent = `STAGE ${stage}`;
+
+  warehouse.classList.remove("stage-2", "stage-3");
+
+  if (stage === 2) {
+    warehouse.classList.add("stage-2");
+  }
+
+  if (stage === 3) {
+    warehouse.classList.add("stage-3");
+  }
+
+  if (!isReset && previousStage !== stage) {
+    message.textContent = `🚚 STAGE ${stage} 진입! 속도가 더 빨라집니다!`;
+    stageBanner.classList.remove("pop");
+    void stageBanner.offsetWidth;
+    stageBanner.classList.add("pop");
+    playStageUpSound();
+  }
+}
+
+function getWarningRate() {
+  if (stage === 3) return 0.65;
+  if (stage === 2) return 0.72;
+  return 0.8;
+}
+
 function endGame(text) {
   gameOver = true;
   canSort = false;
@@ -228,6 +290,7 @@ function endGame(text) {
 
   message.textContent = text;
   warehouse.classList.add("gameover-flash");
+  boxLabel.classList.remove("blink");
   finalScore.textContent = score;
 
   if (score >= 20) {
@@ -255,9 +318,7 @@ function getComboBonus() {
 function checkDailyLoginReward() {
   const today = getTodayString();
 
-  if (lastLoginDate === today) {
-    return;
-  }
+  if (lastLoginDate === today) return;
 
   const yesterday = getDateStringByOffset(-1);
 
@@ -267,9 +328,7 @@ function checkDailyLoginReward() {
     loginStreak = 1;
   }
 
-  if (loginStreak > 7) {
-    loginStreak = 1;
-  }
+  if (loginStreak > 7) loginStreak = 1;
 
   const rewardGold = getLoginRewardGold(loginStreak);
 
@@ -512,6 +571,13 @@ function playWrongSound() {
   playTone(audioCtx, 900, 0.08, 0.1);
   playTone(audioCtx, 600, 0.18, 0.15);
   playTone(audioCtx, 350, 0.33, 0.3);
+}
+
+function playStageUpSound() {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  playTone(audioCtx, 520, 0, 0.1);
+  playTone(audioCtx, 700, 0.1, 0.1);
+  playTone(audioCtx, 940, 0.2, 0.18);
 }
 
 function playTone(audioCtx, frequency, startTime, duration) {
