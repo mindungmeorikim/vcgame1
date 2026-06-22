@@ -9,13 +9,19 @@
 <body>
   <main class="game">
     <header class="top-bar">
+      <div class="status-card">❤️ 하트: <span id="hearts">5</span> / 100</div>
+      <div class="status-card">🪙 골드: <span id="gold">0</span></div>
+      <div class="status-card">🔥 연속 로그인: <span id="loginStreak">0</span>일</div>
       <div class="status-card">🏆 점수: <span id="score">0</span></div>
-      <h1>📦 택배 분류 게임</h1>
-      <div class="status-card">❤️ 실수: <span id="mistakes">0</span> / 5</div>
+      <div class="status-card">실수: <span id="mistakes">0</span> / 5</div>
     </header>
 
+    <h1>📦 택배 분류 게임</h1>
+
+    <button id="shopBtn">❤️ 하트 상점</button>
+
     <section class="warehouse" id="warehouse">
-      <div class="combo" id="combo">COMBO x2</div>
+      <div class="combo" id="combo">COMBO</div>
       <div class="speed-bonus" id="speedBonus">⚡ 빠른 분류 +1점!</div>
       <div class="warning" id="warning">🚨 위험! 빨리 분류하세요!</div>
 
@@ -38,18 +44,44 @@
     </section>
 
     <p id="message">게임 시작을 눌러주세요!</p>
+    <p id="regenText">하트 자동 회복 대기중</p>
     <button id="startBtn">게임 시작</button>
   </main>
 
-  <div id="rankingModal" class="ranking-modal">
-    <div class="ranking-content">
+  <div id="loginRewardModal" class="modal">
+    <div class="modal-content">
+      <h2>🔥 연속 로그인 보상</h2>
+      <p id="loginRewardText"></p>
+      <button id="closeLoginRewardBtn">확인</button>
+    </div>
+  </div>
+
+  <div id="shopModal" class="modal">
+    <div class="modal-content">
+      <h2>❤️ 하트 상점</h2>
+      <p>하트 1개당 골드 5개가 필요합니다.</p>
+
+      <div class="shop-items">
+        <button class="shop-item" data-heart="1">❤️ x1<br />5골드</button>
+        <button class="shop-item" data-heart="3">❤️ x3<br />15골드</button>
+        <button class="shop-item" data-heart="5">❤️ x5<br />25골드</button>
+        <button class="shop-item" data-heart="10">❤️ x10<br />50골드</button>
+      </div>
+
+      <button id="closeShopBtn">닫기</button>
+    </div>
+  </div>
+
+  <div id="rankingModal" class="modal">
+    <div class="modal-content">
       <h2>🏆 게임 종료</h2>
       <p>최종 점수: <strong id="finalScore">0</strong>점</p>
+      <p id="goldRewardText"></p>
 
       <input type="text" id="nickname" maxlength="10" placeholder="닉네임 입력" />
 
       <button id="saveScoreBtn">점수 등록</button>
-      <button id="restartBtn">다시 시작</button>
+      <button id="restartBtn">🎮 다시 플레이</button>
 
       <h3>랭킹 TOP 10</h3>
       <ol id="rankingList"></ol>
