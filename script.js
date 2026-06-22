@@ -308,11 +308,13 @@ function endGame(text) {
   boxLabel.classList.remove("blink");
   finalScore.textContent = score;
 
-  if (score >= 20) {
-    gold++;
-    goldRewardText.textContent = "🪙 20점 이상 달성! 골드 +1 획득!";
+ const rewardGold = getScoreRewardGold(score);
+
+  if (rewardGold > 0) {
+    gold += rewardGold;
+    goldRewardText.textContent = `🪙 ${score}점 달성! 골드 +${rewardGold} 획득!`;
   } else {
-    goldRewardText.textContent = "20점 이상 달성하면 골드 1개를 받을 수 있어요.";
+    goldRewardText.textContent = "20점 이상 달성하면 골드를 받을 수 있어요.";
   }
 
   saveResources();
@@ -324,9 +326,10 @@ function endGame(text) {
   }, 700);
 }
 
-function getComboBonus() {
-  if (combo >= 10) return 2;
-  if (combo >= 5) return 1;
+function getScoreRewardGold(finalScore) {
+  if (finalScore >= 50) return 3;
+  if (finalScore >= 30) return 2;
+  if (finalScore >= 20) return 1;
   return 0;
 }
 
