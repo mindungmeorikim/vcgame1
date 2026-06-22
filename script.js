@@ -77,6 +77,8 @@ function sortPackage(selectedType, selectedBin) {
     score++;
     scoreEl.textContent = score;
     message.textContent = "정답! 알맞은 박스에 들어갔어요.";
+
+    // 정답 → 커짐 + 성공음
     playCorrectSound();
     selectedBin.classList.add("correct");
     dropBox(selectedBin);
@@ -89,6 +91,8 @@ function sortPackage(selectedType, selectedBin) {
     mistakes++;
     mistakesEl.textContent = mistakes;
     message.textContent = "실수! 다른 박스에 넣었어요.";
+
+    // 오답 → 흔들림 + 실패음
     playWrongSound();
     selectedBin.classList.add("wrong");
     dropBox(selectedBin);
