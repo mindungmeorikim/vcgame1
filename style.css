@@ -232,7 +232,7 @@ h1 {
 
 .combo.show {
   display: block;
-  animation: comboPop 0.65s ease;
+  animation: comboPop 0.8s ease;
 }
 
 #message {
@@ -252,6 +252,63 @@ h1 {
   color: white;
   font-size: 19px;
   cursor: pointer;
+}
+
+.ranking-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.ranking-content {
+  width: 430px;
+  background: white;
+  padding: 28px;
+  border-radius: 22px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.ranking-content h2 {
+  margin-top: 0;
+  font-size: 32px;
+}
+
+.ranking-content input {
+  width: 100%;
+  padding: 13px;
+  font-size: 18px;
+  margin-bottom: 12px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+}
+
+.ranking-content button {
+  padding: 11px 18px;
+  margin: 4px;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+#saveScoreBtn {
+  background: #159947;
+  color: white;
+}
+
+#restartBtn {
+  background: #222;
+  color: white;
+}
+
+#rankingList {
+  text-align: left;
+  font-size: 18px;
 }
 
 @keyframes correct {
@@ -290,7 +347,7 @@ h1 {
     opacity: 0;
     transform: translateX(-50%) scale(0.4);
   }
-  50% {
+  30% {
     opacity: 1;
     transform: translateX(-50%) scale(1.25);
   }

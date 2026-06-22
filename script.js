@@ -9,6 +9,7 @@ let boxX = 0;
 let moveTimer = null;
 let canSort = false;
 let speed = 2.6;
+let scoreSaved = false;
 
 const scoreEl = document.querySelector("#score");
 const mistakesEl = document.querySelector("#mistakes");
@@ -23,7 +24,16 @@ const warning = document.querySelector("#warning");
 const comboEl = document.querySelector("#combo");
 const warehouse = document.querySelector("#warehouse");
 
+const rankingModal = document.querySelector("#rankingModal");
+const rankingList = document.querySelector("#rankingList");
+const nicknameInput = document.querySelector("#nickname");
+const saveScoreBtn = document.querySelector("#saveScoreBtn");
+const restartBtn = document.querySelector("#restartBtn");
+const finalScore = document.querySelector("#finalScore");
+
 startBtn.addEventListener("click", startGame);
+saveScoreBtn.addEventListener("click", saveRanking);
+restartBtn.addEventListener("click", restartGame);
 
 bins.forEach((bin) => {
   bin.addEventListener("click", () => {
@@ -39,12 +49,16 @@ function startGame() {
   speed = 2.6;
   gameOver = false;
   canSort = true;
+  scoreSaved = false;
 
   scoreEl.textContent = score;
   mistakesEl.textContent = mistakes;
   message.textContent = "택배가 끝에 도착하기 전에 알맞은 박스를 클릭하세요!";
 
+  rankingModal.style.display = "none";
   warehouse.classList.remove("gameover-flash");
+  comboEl.classList.remove("show");
+
   createPackage();
 }
 
@@ -92,23 +106,29 @@ function sortPackage(selectedType, selectedBin) {
   hideWarning();
 
   if (selectedType === currentType) {
-    score++;
     combo++;
 
+    const bonus = getComboBonus();
+    score += 1 + bonus;
+
     scoreEl.textContent = score;
-    message.textContent = "정답! 알맞은 박스에 들어갔어요.";
+
+    if (bonus > 0) {
+      message.textContent = `정답! COMBO x${combo} 보너스 +${bonus}점!`;
+    } else {
+      message.textContent = "정답! 알맞은 박스에 들어갔어요.";
+    }
 
     playCorrectSound();
     selectedBin.classList.add("correct");
     dropBox(selectedBin);
 
     if (combo >= 2) {
-      showCombo();
+      showCombo(bonus);
     }
 
     if (score >= 10) {
       speed = 3.6;
-      message.textContent = "속도 증가! 더 빠르게 분류하세요!";
     }
 
     if (score >= 20) {
@@ -138,6 +158,18 @@ function sortPackage(selectedType, selectedBin) {
   }, 850);
 }
 
+function getComboBonus() {
+  if (combo >= 10) {
+    return 2;
+  }
+
+  if (combo >= 5) {
+    return 1;
+  }
+
+  return 0;
+}
+
 function dropBox(bin) {
   const conveyorRect = conveyor.getBoundingClientRect();
   const binRect = bin.getBoundingClientRect();
@@ -159,13 +191,20 @@ function hideWarning() {
   warning.classList.remove("show");
 }
 
-function showCombo() {
-  comboEl.textContent = `COMBO x${combo}`;
+function showCombo(bonus) {
+  if (bonus > 0) {
+    comboEl.textContent = `COMBO x${combo}  +${bonus}점`;
+  } else {
+    comboEl.textContent = `COMBO x${combo}`;
+  }
+
   comboEl.classList.remove("show");
-
   void comboEl.offsetWidth;
-
   comboEl.classList.add("show");
+
+  setTimeout(() => {
+    comboEl.classList.remove("show");
+  }, 900);
 }
 
 function endGame(text) {
@@ -177,6 +216,66 @@ function endGame(text) {
 
   message.textContent = text;
   warehouse.classList.add("gameover-flash");
+  finalScore.textContent = score;
+
+  setTimeout(() => {
+    rankingModal.style.display = "flex";
+    renderRanking();
+  }, 700);
+}
+
+function saveRanking() {
+  if (scoreSaved) return;
+
+  const nickname = nicknameInput.value.trim();
+
+  if (!nickname) {
+    alert("닉네임을 입력해주세요!");
+    return;
+  }
+
+  const rankings = JSON.parse(localStorage.getItem("parcelRanking")) || [];
+
+  rankings.push({
+    name: nickname,
+    score: score
+  });
+
+  rankings.sort((a, b) => b.score - a.score);
+  rankings.splice(10);
+
+  localStorage.setItem("parcelRanking", JSON.stringify(rankings));
+
+  scoreSaved = true;
+  saveScoreBtn.textContent = "등록 완료";
+  saveScoreBtn.disabled = true;
+
+  renderRanking();
+}
+
+function renderRanking() {
+  const rankings = JSON.parse(localStorage.getItem("parcelRanking")) || [];
+
+  rankingList.innerHTML = "";
+
+  if (rankings.length === 0) {
+    rankingList.innerHTML = "<li>아직 랭킹이 없습니다.</li>";
+    return;
+  }
+
+  rankings.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = `${item.name} - ${item.score}점`;
+    rankingList.appendChild(li);
+  });
+}
+
+function restartGame() {
+  nicknameInput.value = "";
+  saveScoreBtn.textContent = "점수 등록";
+  saveScoreBtn.disabled = false;
+  rankingModal.style.display = "none";
+  startGame();
 }
 
 function playCorrectSound() {

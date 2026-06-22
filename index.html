@@ -40,6 +40,26 @@
     <button id="startBtn">게임 시작</button>
   </main>
 
+  <div id="rankingModal" class="ranking-modal">
+    <div class="ranking-content">
+      <h2>🏆 게임 종료</h2>
+      <p>최종 점수: <strong id="finalScore">0</strong>점</p>
+
+      <input
+        type="text"
+        id="nickname"
+        maxlength="10"
+        placeholder="닉네임 입력"
+      />
+
+      <button id="saveScoreBtn">점수 등록</button>
+      <button id="restartBtn">다시 시작</button>
+
+      <h3>랭킹 TOP 10</h3>
+      <ol id="rankingList"></ol>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
